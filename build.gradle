@@ -1,0 +1,63 @@
+import edu.sc.seis.launch4j.tasks.Launch4jLibraryTask
+
+plugins {
+	id 'java'
+	id 'edu.sc.seis.launch4j' version '2.5.4'
+	id 'org.springframework.boot' version '2.7.6'
+	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+}
+
+apply plugin: 'edu.sc.seis.launch4j'
+
+group = 'com.damine'
+version = '0.0.1-SNAPSHOT'
+compileJava.options.encoding = 'UTF-8'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '2.7.6'
+	// https://mvnrepository.com/artifact/org.projectlombok/lombok
+	compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
+	annotationProcessor 'org.projectlombok:lombok:1.18.24'
+	// https://mvnrepository.com/artifact/com.mysql/mysql-connector-j
+	implementation group: 'com.mysql', name: 'mysql-connector-j', version: '8.0.31'
+
+	implementation 'org.springframework.boot:spring-boot-starter'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+launch4j {
+	headerType = "gui"
+	mainClassName = "com.damine.app.SpringFxApplication"
+	outfile = "application.exe"
+	libraryDir = "lib"
+	stayAlive = false
+	jdkPreference = 'jdkOnly'
+	jreMinVersion = '1.8.0'
+	jreMaxVersion = '1.8.9'
+	maxHeapSize = 512
+	stayAlive = false
+	bundledJre64Bit = true
+	bundledJrePath = '../hello-windows/jre8'
+	//icon = "${projectDir}/img/med-removebg-preview.ico"
+}
+
+task createFastStart(type: Launch4jLibraryTask) {
+	outfile = "application.exe"
+	mainClassName = "com.damine.app.SpringFxApplication"
+	//icon = "${projectDir}/icons/myAppFast.ico"
+	fileDescription = 'The lightning fast implementation'
+}
+
+task "MyApp-memory"(type: Launch4jLibraryTask) {
+	fileDescription = 'The default implementation with increased heap size'
+	maxHeapPercent = 50
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
